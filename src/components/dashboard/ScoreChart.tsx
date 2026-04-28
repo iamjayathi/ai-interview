@@ -16,12 +16,24 @@ interface ScoreChartProps {
   difficulties: number[];
 }
 
-function CustomTooltip({ active, payload, label }: any) {
+interface TooltipPayload {
+  name: string;
+  value: number;
+  color: string;
+}
+
+interface TooltipProps {
+  active?: boolean;
+  payload?: TooltipPayload[];
+  label?: string;
+}
+
+function CustomTooltip({ active, payload, label }: TooltipProps) {
   if (active && payload && payload.length) {
     return (
       <div className="glass px-3 py-2 rounded-xl border border-slate-700/60 text-sm">
         <p className="text-slate-400 text-xs mb-1">Question {label}</p>
-        {payload.map((p: { name: string; value: number; color: string }, i: number) => (
+        {payload.map((p, i) => (
           <p key={i} style={{ color: p.color }} className="font-medium">
             {p.name}: {p.value}
             {p.name === 'Score' ? '/100' : '/10'}

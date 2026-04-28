@@ -30,7 +30,13 @@ const ROUND_COLORS: Partial<Record<RoundType, string>> = {
   statistics:   '#fbbf24',
 };
 
-function CustomTooltip({ active, payload, label }: any) {
+interface TooltipProps {
+  active?: boolean;
+  payload?: { value: number }[];
+  label?: string;
+}
+
+function CustomTooltip({ active, payload, label }: TooltipProps) {
   if (active && payload && payload.length) {
     return (
       <div className="glass px-3 py-2 rounded-xl border border-slate-700/60 text-sm">

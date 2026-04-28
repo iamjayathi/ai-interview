@@ -92,6 +92,7 @@ export default function ResultsPage() {
       return;
     }
     if (!summary && state.history.length > 0) {
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       generateSummary(state);
     }
   }, [state, summary, generateSummary, router]);
