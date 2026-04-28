@@ -3,7 +3,6 @@ export const runtime = 'nodejs';
 import { NextRequest, NextResponse } from 'next/server';
 import { parseResume } from '@/lib/interview';
 import { buildResumeChunks, embedResumeChunks } from '@/lib/rag';
-import { activeProvider } from '@/lib/embeddings';
 
 export async function POST(request: NextRequest) {
   try {
@@ -19,8 +18,8 @@ export async function POST(request: NextRequest) {
     }
 
     const buffer = Buffer.from(await file.arrayBuffer());
-    const pdfParse = require('pdf-parse/lib/pdf-parse.js');
-    const pdfData = await pdfParse(buffer);
+    const pdf = await import('pdf-parse/lib/pdf-parse.js');
+    const pdfData = await pdf.default(buffer);
     const pdfText = pdfData.text as string;
 
     if (!pdfText || pdfText.trim().length < 50) {
@@ -37,7 +36,7 @@ export async function POST(request: NextRequest) {
         resumeChunks: chunks,
         meta: { semantic: true }
       });
-    } catch (err) {
+    } catch {
       // Fallback if embedding service is down
       return NextResponse.json({
         resumeData,
@@ -46,8 +45,8 @@ export async function POST(request: NextRequest) {
       });
     }
 
-  } catch (err) {
-    const message = err instanceof Error ? err.message : String(err);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
     return NextResponse.json(
       { error: `Failed to parse resume: ${message}` },
       { status: 500 }

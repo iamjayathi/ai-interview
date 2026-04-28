@@ -1,5 +1,5 @@
 import { ResumeChunk, RoundType } from './types';
-import { embedQuery, embedQueryWithFallback } from './embeddings';
+import { embedQueryWithFallback } from './embeddings';
 
 export interface VectorDocument {
   id: string;

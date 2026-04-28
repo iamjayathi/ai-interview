@@ -29,7 +29,7 @@ export function TimerBar({ timeLimit, isActive, onExpire, onReset }: TimerBarPro
     } else {
       pause();
     }
-  }, [isActive, timeLimit]);
+  }, [isActive, timeLimit, start, pause, reset]);
 
   useEffect(() => {
     onReset?.(() => {

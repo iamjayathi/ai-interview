@@ -18,7 +18,7 @@ export function useVoice({ onTranscript, onEnd }: UseVoiceOptions = {}) {
     );
   });
 
-  const recognitionRef = useRef<any>(null);
+  const recognitionRef = useRef<SpeechRecognition | null>(null);
   const synthRef = useRef<SpeechSynthesis | null>(
     typeof window !== 'undefined' && 'speechSynthesis' in window
       ? window.speechSynthesis
@@ -27,8 +27,9 @@ export function useVoice({ onTranscript, onEnd }: UseVoiceOptions = {}) {
 
   const startListening = useCallback(() => {
     if (!isSupported) return;
-    const SpeechRecognitionImpl: any =
-      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    const SpeechRecognitionImpl =
+      (window as unknown as { SpeechRecognition: typeof SpeechRecognition }).SpeechRecognition || 
+      (window as unknown as { webkitSpeechRecognition: typeof SpeechRecognition }).webkitSpeechRecognition;
 
     if (!SpeechRecognitionImpl) return;
 
@@ -37,7 +38,7 @@ export function useVoice({ onTranscript, onEnd }: UseVoiceOptions = {}) {
     recognition.interimResults = true;
     recognition.lang = 'en-US';
 
-    recognition.onresult = (event: any) => {
+    recognition.onresult = (event: SpeechRecognitionEvent) => {
       let finalTranscript = '';
       let interimTranscript = '';
 

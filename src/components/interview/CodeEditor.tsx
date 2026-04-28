@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { CODE_LANGUAGE_OPTIONS } from '@/lib/interview-config';
 import { CodeSubmission } from '@/lib/types';
@@ -64,7 +64,7 @@ function getPyodide(): Promise<PyodideInstance> {
     }
 
     const poll = setInterval(() => {
-      const loader = (window as any).loadPyodide;
+      const loader = (window as { loadPyodide?: (opts: { indexURL: string }) => Promise<PyodideInstance> }).loadPyodide;
       if (typeof loader === 'function') {
         clearInterval(poll);
         loader({ indexURL: INDEX_URL })
@@ -110,7 +110,10 @@ export function CodeEditor({ language: initialLang = 'python', starterTemplate, 
   const [execTime, setExecTime]   = useState<number | null>(null);
   const [pyStatus, setPyStatus]   = useState<'idle' | 'loading' | 'ready'>('idle');
   const codeRef = useRef(code);
-  codeRef.current = code;
+  
+  useEffect(() => {
+    codeRef.current = code;
+  }, [code]);
 
   const handleLanguageChange = (lang: string) => {
     setLanguage(lang);

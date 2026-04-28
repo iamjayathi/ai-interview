@@ -89,13 +89,17 @@ export default function ResultsPage() {
   useEffect(() => {
     if (!state) {
       router.push('/');
-      return;
     }
-    if (!summary && state.history.length > 0) {
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      generateSummary(state);
+  }, [state, router]);
+
+  useEffect(() => {
+    if (state && !summary && state.history.length > 0 && !generating) {
+      const timer = setTimeout(() => {
+        generateSummary(state);
+      }, 0);
+      return () => clearTimeout(timer);
     }
-  }, [state, summary, generateSummary, router]);
+  }, [state, summary, generating, generateSummary]);
 
   const handleRetry = () => {
     localStorage.removeItem('interviewSummary');
